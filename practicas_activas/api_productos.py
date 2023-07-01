@@ -34,8 +34,9 @@ def crear_producto(producto: Producto):
 
 @app.get('/productos/{producto_id}')
 def obtener_producto_por_id(producto_id: str):
-    for p in productos:
-        if p.id == producto_id:
-            return p
+    # for p in productos:
+    #     if p.id == producto_id:
+    #         return p
+    filter(lambda p: p.id == producto_id, )
     
     return {'mensaje': f'El producto con el ID {producto_id} no fue encontrado'}
