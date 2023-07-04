@@ -1,8 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
 from uuid import uuid4 as uuid
 from typing import Optional
-
 
 class Producto(BaseModel):
     id: Optional[str]
@@ -37,6 +36,20 @@ def obtener_producto_por_id(producto_id: str):
     # for p in productos:
     #     if p.id == producto_id:
     #         return p
-    filter(lambda p: p.id == producto_id, )
+    resultado = list(filter(lambda p: p.id == producto_id, productos))
+    if len(resultado):
+        return resultado[0]    
     
-    return {'mensaje': f'El producto con el ID {producto_id} no fue encontrado'}
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'El producto con el ID {producto_id} no fue encontrado')
+
+
+@app.delete('/productos/{producto_id}')
+def eliminar_producto_por_id(producto_id: str):
+    resultado = list(filter(lambda p: p.id == producto_id, productos))
+    if len(resultado):
+        producto = resultado[0]   
+        productos.remove(producto)
+
+        return (f'El producto con el ID {producto_id} no fue encontrado') 
+    
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'El producto con el ID {producto_id} no fue encontrado')
